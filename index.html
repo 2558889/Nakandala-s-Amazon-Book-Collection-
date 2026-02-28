@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nakandala's Amazon Book Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e67e22;
+            --accent-hover: #d35400;
+            --bg: #fafafa;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+            --border: #e0e0e0;
+            --shadow: rgba(0,0,0,0.08);
+            --shadow-hover: rgba(0,0,0,0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #ecf0f1;
+            --accent: #f39c12;
+            --accent-hover: #e67e22;
+            --bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text: #ecf0f1;
+            --text-light: #95a5a6;
+            --border: #0f3460;
+            --shadow: rgba(0,0,0,0.3);
+            --shadow-hover: rgba(0,0,0,0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(var(--card-bg), 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px var(--shadow);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--border);
+            color: var(--text);
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            transform: rotate(15deg);
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu span {
+            width: 25px;
+            height: 3px;
+            background: var(--text);
+            transition: var(--transition);
+            border-radius: 2px;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 6rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--card-bg) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+            opacity: 0.03;
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.4);
+            background: var(--accent-hover);
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Search and Filter Section */
+        .controls {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem 2rem;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3.5rem;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            font-size: 1rem;
+            background: var(--card-bg);
+            color: var(--text);
+            transition: var(--transition);
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 4px 20px rgba(230, 126, 34, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .category-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .category-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+        }
+
+        /* Books Grid */
+        .books-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .book-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px var(--shadow-hover);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .book-card:hover .book-cover img {
+            transform: scale(1.05);
+        }
+
+        .book-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+            opacity: 0;
+            transition: var(--transition);
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+        }
+
+        .book-card:hover .book-overlay {
+            opacity: 1;
+        }
+
+        .view-text {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .book-info {
+            padding: 1.5rem;
+        }
+
+        .book-category {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(230, 126, 34, 0.1);
+            color: var(--accent);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+
+        .book-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+            color: var(--primary);
+        }
+
+        .book-description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .amazon-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .amazon-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+        }
+
+        /* About Section */
+        .about {
+            max-width: 800px;
+            margin: 6rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .about h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .about p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: var(--card-bg);
+            padding: 4rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .contact-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact p {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .contact-form button {
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .contact-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            padding: 2.5rem;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            transform: scale(0.9);
+            animation: scaleIn 0.3s ease forwards;
+        }
+
+        @keyframes scaleIn {
+            to { transform: scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+
+        .modal-book-cover {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .modal h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .modal-btn.primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+        }
+
+        .modal-btn.secondary {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .hero {
+                padding: 4rem 1.5rem;
+            }
+
+            .categories {
+                gap: 0.5rem;
+            }
+
+            .category-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .book-cover {
+                height: 350px;
+            }
+        }
+
+        /* Scroll Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            z-index: 1001;
+            transition: width 0.1s;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">Nakandala Books</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#categories">Categories</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button></li>
+            </ul>
+            <div class="mobile-menu" id="mobileMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Nakandala's Amazon Book Collection</h1>
+            <p>Explore My Published Books on Amazon</p>
+            <a href="#categories" class="cta-button">Browse Books</a>
+        </div>
+    </section>
+
+    <section class="controls" id="categories">
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search books by title...">
+        </div>
+        
+        <div class="categories" id="categoryFilters">
+            <button class="category-btn active" data-category="all">All Books</button>
+            <button class="category-btn" data-category="Arts & Photography">Arts & Photography</button>
+            <button class="category-btn" data-category="Biographies & Memoirs">Biographies & Memoirs</button>
+            <button class="category-btn" data-category="Business & Money">Business & Money</button>
+            <button class="category-btn" data-category="Calendars">Calendars</button>
+            <button class="category-btn" data-category="Children's Books">Children's Books</button>
+            <button class="category-btn" data-category="Comics & Graphic Novels">Comics & Graphic Novels</button>
+            <button class="category-btn" data-category="Computers & Technology">Computers & Technology</button>
+            <button class="category-btn" data-category="Cookbooks, Food & Wine">Cookbooks, Food & Wine</button>
+            <button class="category-btn" data-category="Crafts, Hobbies & Home">Crafts, Hobbies & Home</button>
+            <button class="category-btn" data-category="Education & Teaching">Education & Teaching</button>
+            <button class="category-btn" data-category="Engineering & Transportation">Engineering & Transportation</button>
+            <button class="category-btn" data-category="Health, Fitness & Dieting">Health, Fitness & Dieting</button>
+            <button class="category-btn" data-category="History">History</button>
+            <button class="category-btn" data-category="Humor & Entertainment">Humor & Entertainment</button>
+            <button class="category-btn" data-category="Law">Law</button>
+            <button class="category-btn" data-category="Literature & Fiction">Literature & Fiction</button>
+            <button class="category-btn" data-category="Medical Books">Medical Books</button>
+            <button class="category-btn" data-category="Mystery, Thriller & Suspense">Mystery, Thriller & Suspense</button>
+            <button class="category-btn" data-category="Parenting & Relationships">Parenting & Relationships</button>
+            <button class="category-btn" data-category="Politics & Social Sciences">Politics & Social Sciences</button>
+            <button class="category-btn" data-category="Reference">Reference</button>
+            <button class="category-btn" data-category="Religion & Spirituality">Religion & Spirituality</button>
+            <button class="category-btn" data-category="Romance">Romance</button>
+            <button class="category-btn" data-category="Science & Math">Science & Math</button>
+            <button class="category-btn" data-category="Science Fiction & Fantasy">Science Fiction & Fantasy</button>
+            <button class="category-btn" data-category="Self-Help">Self-Help</button>
+            <button class="category-btn" data-category="Sports & Outdoors">Sports & Outdoors</button>
+            <button class="category-btn" data-category="Teen & Young Adult">Teen & Young Adult</button>
+            <button class="category-btn" data-category="Travel">Travel</button>
+        </div>
+    </section>
+
+    <section class="books-section">
+        <div class="books-grid" id="booksGrid">
+            <!-- Books will be dynamically inserted here -->
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <h2>About the Collection</h2>
+        <p>Welcome to my personal book showcase. Here you'll find a curated selection of my published works available exclusively through Amazon KDP. Each book represents countless hours of research, writing, and dedication to providing valuable content for readers worldwide.</p>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="contact-container">
+            <h2>Get in Touch</h2>
+            <p>Have questions about my books or interested in collaborations?</p>
+            <form class="contact-form" onsubmit="event.preventDefault(); alert('Thank you for your message!');">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea rows="4" placeholder="Your Message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Nakandala's Amazon Book Collection<br>
+        All books are available exclusively on Amazon.</p>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal" id="bookModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <img src="" alt="" class="modal-book-cover" id="modalCover">
+            <h3 id="modalTitle">Book Title</h3>
+            <p id="modalDescription">Book description goes here.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn primary" id="modalAmazonBtn">View on Amazon</button>
+                <button class="modal-btn secondary" id="modalCloseBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Book Data Array
+        const books = [
+            {
+                id: 1,
+                title: "The Art of Digital Photography",
+                category: "Arts & Photography",
+                description: "Master the fundamentals of digital photography with practical techniques for stunning visuals.",
+                cover: "https://images.unsplash.com/photo-1554048612-387768052bf7?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE1"
+            },
+            {
+                id: 2,
+                title: "Journey of a Lifetime",
+                category: "Biographies & Memoirs",
+                description: "An inspiring memoir about overcoming adversity and finding purpose in unexpected places.",
+                cover: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE2"
+            },
+            {
+                id: 3,
+                title: "Startup Success Blueprint",
+                category: "Business & Money",
+                description: "Essential strategies for entrepreneurs looking to build scalable and sustainable businesses.",
+                cover: "https://images.unsplash.com/photo-1554774853-719586f8c277?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE3"
+            },
+            {
+                id: 4,
+                title: "2026 Nature Calendar",
+                category: "Calendars",
+                description: "Beautiful nature photography calendar featuring stunning landscapes from around the world.",
+                cover: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE4"
+            },
+            {
+                id: 5,
+                title: "The Magic Forest",
+                category: "Children's Books",
+                description: "A whimsical adventure story for young readers about friendship and courage.",
+                cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE5"
+            },
+            {
+                id: 6,
+                title: "Heroes of Tomorrow",
+                category: "Comics & Graphic Novels",
+                description: "Epic graphic novel featuring stunning artwork and compelling superhero narratives.",
+                cover: "https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE6"
+            },
+            {
+                id: 7,
+                title: "Python for Beginners",
+                category: "Computers & Technology",
+                description: "Comprehensive guide to programming with Python, from basics to advanced concepts.",
+                cover: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE7"
+            },
+            {
+                id: 8,
+                title: "Culinary Secrets",
+                category: "Cookbooks, Food & Wine",
+                description: "Gourmet recipes and cooking techniques from around the world for home chefs.",
+                cover: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE8"
+            },
+            {
+                id: 9,
+                title: "DIY Home Projects",
+                category: "Crafts, Hobbies & Home",
+                description: "Creative home improvement projects and crafts for every skill level.",
+                cover: "https://images.unsplash.com/photo-1581092921461-eab62e97a782?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE9"
+            },
+            {
+                id: 10,
+                title: "Modern Teaching Methods",
+                category: "Education & Teaching",
+                description: "Innovative approaches to education for the 21st century classroom.",
+                cover: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE10"
+            },
+            {
+                id: 11,
+                title: "Engineering Basics",
+                category: "Engineering & Transportation",
+                description: "Fundamental principles of engineering explained with real-world applications.",
+                cover: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE11"
+            },
+            {
+                id: 12,
+                title: "Wellness Revolution",
+                category: "Health, Fitness & Dieting",
+                description: "Holistic approach to health combining fitness, nutrition, and mental wellbeing.",
+                cover: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE12"
+            },
+            {
+                id: 13,
+                title: "Ancient Civilizations",
+                category: "History",
+                description: "Journey through the rise and fall of the world's greatest ancient empires.",
+                cover: "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE13"
+            },
+            {
+                id: 14,
+                title: "Comedy Writing 101",
+                category: "Humor & Entertainment",
+                description: "Learn the art of comedy writing from stand-up to screenwriting.",
+                cover: "https://images.unsplash.com/photo-1527224857830-43a7acc85260?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE14"
+            },
+            {
+                id: 15,
+                title: "Legal Guide for Everyone",
+                category: "Law",
+                description: "Understanding your rights and legal basics without the complex jargon.",
+                cover: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE15"
+            },
+            {
+                id: 16,
+                title: "Echoes of the Past",
+                category: "Literature & Fiction",
+                description: "A compelling historical fiction novel spanning generations and continents.",
+                cover: "https://images.unsplash.com/photo-1474932430478-367dbb6832c1?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE16"
+            },
+            {
+                id: 17,
+                title: "Medical Terminology",
+                category: "Medical Books",
+                description: "Essential medical terms and concepts for students and healthcare professionals.",
+                cover: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE17"
+            },
+            {
+                id: 18,
+                title: "The Midnight Killer",
+                category: "Mystery, Thriller & Suspense",
+                description: "Gripping psychological thriller that will keep you guessing until the last page.",
+                cover: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE18"
+            },
+            {
+                id: 19,
+                title: "Parenting with Purpose",
+                category: "Parenting & Relationships",
+                description: "Modern parenting strategies for raising confident and compassionate children.",
+                cover: "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE19"
+            },
+            {
+                id: 20,
+                title: "Sociology Today",
+                category: "Politics & Social Sciences",
+                description: "Exploring modern social structures and their impact on contemporary life.",
+                cover: "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE20"
+            },
+            {
+                id: 21,
+                title: "Dictionary of Dreams",
+                category: "Reference",
+                description: "Comprehensive guide to understanding the symbols and meanings in dreams.",
+                cover: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE21"
+            },
+            {
+                id: 22,
+                title: "Spiritual Awakening",
+                category: "Religion & Spirituality",
+                description: "A journey through meditation and mindfulness for inner peace.",
+                cover: "https://images.unsplash.com/photo-1507692049790-de58290a4334?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE22"
+            },
+            {
+                id: 23,
+                title: "Love in Paris",
+                category: "Romance",
+                description: "A passionate romance novel set in the city of lights and love.",
+                cover: "https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE23"
+            },
+            {
+                id: 24,
+                title: "Quantum Physics Explained",
+                category: "Science & Math",
+                description: "Making complex scientific concepts accessible to everyone.",
+                cover: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE24"
+            },
+            {
+                id: 25,
+                title: "Galactic Empires",
+                category: "Science Fiction & Fantasy",
+                description: "Epic space opera featuring interstellar politics and alien civilizations.",
+                cover: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE25"
+            },
+            {
+                id: 26,
+                title: "Mindset Mastery",
+                category: "Self-Help",
+                description: "Transform your thinking patterns to achieve personal and professional success.",
+                cover: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE26"
+            },
+            {
+                id: 27,
+                title: "Extreme Sports Guide",
+                category: "Sports & Outdoors",
+                description: "Adrenaline-pumping activities and outdoor adventures for thrill seekers.",
+                cover: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE27"
+            },
+            {
+                id: 28,
+                title: "The Lost Kingdom",
+                category: "Teen & Young Adult",
+                description: "Fantasy adventure perfect for young adult readers seeking magic and mystery.",
+                cover: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE28"
+            },
+            {
+                id: 29,
+                title: "Hidden Gems of Europe",
+                category: "Travel",
+                description: "Discover off-the-beaten-path destinations across the European continent.",
+                cover: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=600&fit=crop",
+                amazonLink: "https://amazon.com/dp/B08EXAMPLE29"
+            }
+        ];
+
+        // DOM Elements
+        const booksGrid = document.getElementById('booksGrid');
+        const searchInput = document.getElementById('searchInput');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const themeToggle = document.getElementById('themeToggle');
+        const modal = document.getElementById('bookModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalAmazonBtn = document.getElementById('modalAmazonBtn');
+        const progressBar = document.getElementById('progressBar');
+
+        let currentCategory = 'all';
+        let searchTerm = '';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBooks();
+            setupEventListeners();
+            checkTheme();
+        });
+
+        // Render Books
+        function renderBooks() {
+            const filteredBooks = books.filter(book => {
+                const matchesCategory = currentCategory === 'all' || book.category === currentCategory;
+                const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            booksGrid.innerHTML = '';
+
+            if (filteredBooks.length === 0) {
+                booksGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-light);">No books found matching your criteria.</div>';
+                return;
+            }
+
+            filteredBooks.forEach((book, index) => {
+                const card = createBookCard(book, index);
+                booksGrid.appendChild(card);
+            });
+        }
+
+        // Create Book Card
+        function createBookCard(book, index) {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.style.animationDelay = `${index * 0.05}s`;
+            
+            card.innerHTML = `
+                <div class="book-cover">
+                    <img src="${book.cover}" alt="${book.title}" loading="lazy">
+                    <div class="book-overlay">
+                        <span class="view-text">Click to Preview →</span>
+                    </div>
+                </div>
+                <div class="book-info">
+                    <span class="book-category">${book.category}</span>
+                    <h3 class="book-title">${book.title}</h3>
+                    <p class="book-description">${book.description}</p>
+                    <button class="amazon-btn" onclick="openAmazon('${book.amazonLink}')">
+                        <span>📖</span> View on Amazon
+                    </button>
+                </div>
+            `;
+
+            card.addEventListener('click', (e) => {
+                if (!e.target.closest('.amazon-btn')) {
+                    openModal(book);
+                }
+            });
+
+            return card;
+        }
+
+        // Open Amazon Link
+        function openAmazon(url) {
+            window.open(url, '_blank');
+        }
+
+        // Modal Functions
+        function openModal(book) {
+            document.getElementById('modalCover').src = book.cover;
+            document.getElementById('modalTitle').textContent = book.title;
+            document.getElementById('modalDescription').textContent = book.description;
+            modalAmazonBtn.onclick = () => openAmazon(book.amazonLink);
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            // Search
+            searchInput.addEventListener('input', (e) => {
+                searchTerm = e.target.value;
+                renderBooks();
+            });
+
+            // Category Filters
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.dataset.category;
+                    renderBooks();
+                });
+            });
+
+            // Theme Toggle
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // Modal Close
+            modalClose.addEventListener('click', closeModal);
+            modalCloseBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            // Keyboard
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // Scroll Progress
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                progressBar.style.width = scrolled + "%";
+            });
+
+            // Smooth Scroll for Navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Theme Management
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function checkTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenu').addEventListener('click', () => {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
+</body>
+</html>
